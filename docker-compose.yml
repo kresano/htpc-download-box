@@ -90,6 +90,8 @@ services:
       - ${PROJECT}/config/bazarr:/config # config files
       - ${ROOT}/complete/movies:/movies # movies folder
       - ${ROOT}/complete/tv:/tv # tv shows folder
+    ports:
+      - 9095:6767
 
   tautulli:
     image: linuxserver/tautulli:latest
@@ -102,7 +104,7 @@ services:
     volumes:
       - ${PROJECT}/config/tautulli:/config # config files
     ports:
-      - 8181:8181
+      - 9096:8181
 networks:
   rupa:
     external: true
