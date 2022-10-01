@@ -77,6 +77,7 @@ services:
       - ${PROJECT}/config/radarr:/config # config files
       - ${ROOT}/media/movies:/movies # movies folder
       - ${ROOT}/downloads:/downloads # download folder
+    ports:
       - 9093:7878
 
   plex-server:
@@ -89,7 +90,6 @@ services:
     hostname: plexus
     environment:
       - TZ=${TZ} # timezone, defined in .env
-    network_mode: host
     volumes:
       - ${PROJECT}/config/plex/db:/config # plex database
       - ${ROOT}/config/plex/transcode:/transcode # temp transcoded files
