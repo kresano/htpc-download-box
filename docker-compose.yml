@@ -8,11 +8,11 @@ services:
     restart: unless-stopped
     volumes:
       - /dev/net:/dev/net:z # tun device
-      - ${ROOT}/config/vpn:/vpn # OpenVPN configuration
+      - ${PROJECT}/config/vpn:/vpn # OpenVPN configuration
     security_opt:
       - label:disable
     ports:
-      - 8112:8112 # port for deluge web UI to be reachable from local network
+      - 9091:8112 # port for deluge web UI to be reachable from local network
     command: '-f "" -r 192.168.1.0/24' # enable firewall and route local network traffic
 
   deluge:
@@ -26,7 +26,9 @@ services:
       - TZ=${TZ} # timezone, defined in .env
     volumes:
       - ${ROOT}/downloads:/downloads # downloads folder
-      - ${ROOT}/config/deluge:/config # config files
+      - ${PROJECT}/config/deluge:/config # config files
+    ports:
+      - 9091:8112
 
   jackett:
     container_name: jackett
@@ -40,20 +42,9 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${ROOT}/downloads/torrent-blackhole:/downloads # place where to put .torrent files for manual download
-      - ${ROOT}/config/jackett:/config # config files
-
-  nzbget:
-    container_name: nzbget
-    image: linuxserver/nzbget:latest
-    restart: unless-stopped
-    network_mode: host
-    environment:
-      - PUID=${PUID} # default user id, defined in .env
-      - PGID=${PGID} # default group id, defined in .env
-      - TZ=${TZ} # timezone, defined in .env
-    volumes:
-      - ${ROOT}/downloads:/downloads # download folder
-      - ${ROOT}/config/nzbget:/config # config files
+      - ${PROJECT}/config/jackett:/config # config files
+    ports:
+      - 9092:9117
 
   sonarr:
     container_name: sonarr
@@ -66,9 +57,11 @@ services:
       - TZ=${TZ} # timezone, defined in .env
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ${ROOT}/config/sonarr:/config # config files
-      - ${ROOT}/complete/tv:/tv # tv shows folder
+      - ${PROJECT}/config/sonarr:/config # config files
+      - ${ROOT}/media/tv:/tv # tv shows folder
       - ${ROOT}/downloads:/downloads # download folder
+    ports:
+      - 9094:8989
 
   radarr:
     container_name: radarr
@@ -81,21 +74,26 @@ services:
       - TZ=${TZ} # timezone, defined in .env
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ${ROOT}/config/radarr:/config # config files
-      - ${ROOT}/complete/movies:/movies # movies folder
+      - ${PROJECT}/config/radarr:/config # config files
+      - ${ROOT}/media/movies:/movies # movies folder
       - ${ROOT}/downloads:/downloads # download folder
+      - 9093:7878
 
   plex-server:
     container_name: plex-server
     image: plexinc/pms-docker:latest
     restart: unless-stopped
+    networks:
+      rupa:
+        ipv4_address: 192.168.178.252
+    hostname: plexus
     environment:
       - TZ=${TZ} # timezone, defined in .env
     network_mode: host
     volumes:
-      - ${ROOT}/config/plex/db:/config # plex database
+      - ${PROJECT}/config/plex/db:/config # plex database
       - ${ROOT}/config/plex/transcode:/transcode # temp transcoded files
-      - ${ROOT}/complete:/data # media library
+      - ${ROOT}/media:/data # media library
 
   bazarr:
     container_name: bazarr
@@ -108,6 +106,23 @@ services:
       - TZ=${TZ} # timezone, defined in .env
       - UMASK_SET=022 #optional
     volumes:
-      - ${ROOT}/config/bazarr:/config # config files
+      - ${PROJECT}/config/bazarr:/config # config files
       - ${ROOT}/complete/movies:/movies # movies folder
       - ${ROOT}/complete/tv:/tv # tv shows folder
+
+  tautulli:
+    image: linuxserver/tautulli:latest
+    container_name: tautulli
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      - PUID=${PUID} # default user id, defined in .env
+      - PGID=${PGID} # default group id, defined in .env
+      - TZ=${TZ} # timezone, defined in .env
+    volumes:
+      - ${PROJECT}/config/tautulli:/config # config files
+    ports:
+      - 8181:8181
+networks:
+  rupa:
+    external: true
