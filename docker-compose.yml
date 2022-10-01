@@ -11,7 +11,7 @@ services:
       - TZ=${TZ} # timezone, defined in .env
     volumes:
       - ${ROOT}/downloads:/downloads # downloads folder
-      - ${PROJECT}/config/deluge:/config # config files
+      - ${ROOT}/config/deluge:/config # config files
     ports:
       - 9091:8112
 
@@ -26,7 +26,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${ROOT}/downloads/torrent-blackhole:/downloads # place where to put .torrent files for manual download
-      - ${PROJECT}/config/jackett:/config # config files
+      - ${ROOT}/config/jackett:/config # config files
     ports:
       - 9092:9117
 
@@ -40,7 +40,7 @@ services:
       - TZ=${TZ} # timezone, defined in .env
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ${PROJECT}/config/sonarr:/config # config files
+      - ${ROOT}/config/sonarr:/config # config files
       - ${ROOT}/media/tv:/tv # tv shows folder
       - ${ROOT}/downloads:/downloads # download folder
     ports:
@@ -56,7 +56,7 @@ services:
       - TZ=${TZ} # timezone, defined in .env
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ${PROJECT}/config/radarr:/config # config files
+      - ${ROOT}/config/radarr:/config # config files
       - ${ROOT}/media/movies:/movies # movies folder
       - ${ROOT}/downloads:/downloads # download folder
     ports:
@@ -73,7 +73,7 @@ services:
     environment:
       - TZ=${TZ} # timezone, defined in .env
     volumes:
-      - ${PROJECT}/config/plex/db:/config # plex database
+      - ${ROOT}/config/plex/db:/config # plex database
       - ${ROOT}/config/plex/transcode:/transcode # temp transcoded files
       - ${ROOT}/media:/data # media library
 
@@ -87,7 +87,7 @@ services:
       - TZ=${TZ} # timezone, defined in .env
       - UMASK_SET=022 #optional
     volumes:
-      - ${PROJECT}/config/bazarr:/config # config files
+      - ${ROOT}/config/bazarr:/config # config files
       - ${ROOT}/complete/movies:/movies # movies folder
       - ${ROOT}/complete/tv:/tv # tv shows folder
     ports:
@@ -102,7 +102,7 @@ services:
       - PGID=${PGID} # default group id, defined in .env
       - TZ=${TZ} # timezone, defined in .env
     volumes:
-      - ${PROJECT}/config/tautulli:/config # config files
+      - ${ROOT}/config/tautulli:/config # config files
     ports:
       - 9096:8181
 networks:
