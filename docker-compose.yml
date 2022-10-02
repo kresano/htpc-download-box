@@ -88,8 +88,8 @@ services:
       - UMASK_SET=022 #optional
     volumes:
       - ${ROOT}/config/bazarr:/config # config files
-      - ${ROOT}/complete/movies:/movies # movies folder
-      - ${ROOT}/complete/tv:/tv # tv shows folder
+      - ${ROOT}/media/movies:/movies # movies folder
+      - ${ROOT}/media/tv:/tv # tv shows folder
     ports:
       - 9095:6767
 
